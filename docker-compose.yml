@@ -1,0 +1,46 @@
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: hpca-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hpca-backend
+    ports:
+      - "5001:5001"
+    environment:
+      REDIS_HOST: redis
+    volumes:
+      - uploaded_images:/app/uploads
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      REDIS_HOST: redis
+      PYTHON_PATH: /opt/venv/bin/python
+      PROCESS_SCRIPT: /app/image-worker/process_image.py
+    volumes:
+      - uploaded_images:/app/uploads
+      - processed_images:/app/processed
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  uploaded_images:
+  processed_images:

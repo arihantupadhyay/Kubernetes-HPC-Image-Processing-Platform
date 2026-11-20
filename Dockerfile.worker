@@ -1,0 +1,23 @@
+
+FROM node:22-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache python3 py3-pip
+
+COPY backend/package*.json ./backend/
+
+WORKDIR /app/backend
+
+RUN npm install bullmq ioredis
+
+COPY backend/worker.js ./worker.js
+
+COPY image-worker/process_image.py /app/image-worker/process_image.py
+
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install pillow
+
+WORKDIR /app
+
+CMD ["node", "backend/worker.js"]

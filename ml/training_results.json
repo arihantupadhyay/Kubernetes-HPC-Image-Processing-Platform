@@ -1,0 +1,17 @@
+{
+    "modelName": "Random Forest Regressor",
+    "target": "processingTimeSeconds",
+    "totalRecords": 100,
+    "trainingRecords": 80,
+    "testingRecords": 20,
+    "maeSeconds": 0.7646,
+    "r2Score": 0.2311,
+    "operations": [
+        "blur",
+        "grayscale",
+        "resize",
+        "sharpen"
+    ],
+    "trainedAt": "2026-11-19T20:53:28.302499",
+    "status": "trained"
+}

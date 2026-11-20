@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+venv/
+.venv/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Generated files
+backend/uploads/*
+backend/processed/*
+processed/*
+!backend/uploads/.gitkeep
+!backend/processed/.gitkeep
+!processed/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
+
+# Large local test images
+image-worker/bird.jpg
+image-worker/test1.jpg
+image-worker/test2.jpg
+image-worker/test3.jpg

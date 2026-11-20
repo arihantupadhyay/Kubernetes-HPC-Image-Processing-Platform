@@ -1,0 +1,49 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: image-worker
+  template:
+    metadata:
+      labels:
+        app: image-worker
+    spec:
+      initContainers:
+        - name: prepare-storage
+          image: busybox:1.36
+          command: ["sh", "-c", "mkdir -p /shared/processed"]
+          volumeMounts:
+            - name: image-storage
+              mountPath: /shared
+      containers:
+        - name: worker
+          image: hpcaproject-worker:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+             cpu: "500m"
+            memory: "1Gi"
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: PYTHON_PATH
+              value: /opt/venv/bin/python
+            - name: PROCESS_SCRIPT
+              value: /app/image-worker/process_image.py
+            - name: OUTPUT_DIR
+              value: /app/uploads/processed
+          volumeMounts:
+            - name: image-storage
+              mountPath: /app/uploads
+      volumes:
+        - name: image-storage
+          persistentVolumeClaim:
+            claimName: image-storage
